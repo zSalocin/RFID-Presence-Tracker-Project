@@ -39,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PlatformFile? file;
   String? filePath;
   List item = [];
-  List<String> com = [];
+  List<String> com = ["COM1", "COM2", "COM3", "COM4", "COM5"];
   String? selectedItem;
   String? name;
   String? rfid;

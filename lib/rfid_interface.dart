@@ -1,5 +1,6 @@
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:rfid/test.dart';
 import 'components.dart';
 import 'excel_services.dart';
 
@@ -32,6 +33,19 @@ class RFID extends StatefulWidget {
 class _RFIDState extends State<RFID> {
   final formKey = GlobalKey<FormState>();
   String id = '';
+  late SerialListener serialListener;
+
+  @override
+  void initState() {
+    super.initState();
+    serialListener = SerialListener(onDataReceived: onDataReceived);
+    serialListener.startListening();
+  }
+
+  void onDataReceived(String data) {
+    // Faça o que quiser com os dados recebidos, por exemplo, atualize o estado ou chame uma função de callback.
+    print('Received data: $data');
+  }
 
   @override
   Widget build(BuildContext context) {
