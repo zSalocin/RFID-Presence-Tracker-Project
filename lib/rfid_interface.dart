@@ -1,6 +1,5 @@
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'components.dart';
 import 'excel_services.dart';
 
@@ -33,18 +32,6 @@ class RFID extends StatefulWidget {
 class _RFIDState extends State<RFID> {
   final formKey = GlobalKey<FormState>();
   String id = '';
-  late SerialPort port;
-  late SerialPortReader reader;
-
-  @override
-  void initState() {
-    super.initState();
-    port = SerialPort(widget.comPort!);
-    SerialPortReader reader = SerialPortReader(port);
-    reader.stream.map((data) {
-      print(String.fromCharCodes(data));
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

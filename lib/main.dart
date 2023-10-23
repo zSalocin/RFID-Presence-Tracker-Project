@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
-import 'package:flutter_libserialport/flutter_libserialport.dart';
 import 'package:rfid/rfid_interface.dart';
 
 import 'excel_services.dart';
@@ -40,7 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PlatformFile? file;
   String? filePath;
   List item = [];
-  List<String> com = SerialPort.availablePorts;
+  List<String> com = [];
   String? selectedItem;
   String? name;
   String? rfid;
