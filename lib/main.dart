@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'package:rfid/rfid_interface.dart';
+import 'package:serial_port_win32/serial_port_win32.dart';
 
 import 'excel_services.dart';
 
@@ -39,7 +40,7 @@ class _MyHomePageState extends State<MyHomePage> {
   PlatformFile? file;
   String? filePath;
   List item = [];
-  List<String> com = ["COM1", "COM2", "COM3", "COM4", "COM5"];
+  final com = SerialPort.getAvailablePorts();
   String? selectedItem;
   String? name;
   String? rfid;
@@ -246,6 +247,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
+                                  print(com);
                                   if (formKey.currentState!.validate()) {
                                     formKey.currentState!.save();
                                     Navigator.push(
