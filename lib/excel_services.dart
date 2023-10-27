@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:excel/excel.dart';
+import 'package:flutter/material.dart';
+
+import 'components.dart';
 
 Excel getExcel(String filePath) {
   var bytes = File(filePath).readAsBytesSync();
@@ -42,8 +45,6 @@ int searchInColumn(Sheet? sheet, String nomeColuna, dynamic searchValue) {
               CellIndex.indexByColumnRow(columnIndex: columnIndex, rowIndex: i))
           .value;
       if (cellValue != null) {
-        print('searchValue: $searchValue');
-        print('cellValue: $cellValue');
         if (searchValue is String) {
           if (cellValue.toString().toLowerCase() == searchValue.toLowerCase()) {
             return i;
@@ -85,7 +86,7 @@ int getColumnByName(Sheet sheet, String columnName) {
   return -1;
 }
 
-String registerPresenceByID({
+String registerPresence({
   required Sheet? sheet,
   required String id,
   required String? columnID,
@@ -95,12 +96,8 @@ String registerPresenceByID({
   if (sheet == null || columnID == null || columnPresence == null) {
     return 'error';
   }
-  print('ID: $columnID');
-  print('ID: $columnPresence');
   var columnIndex = getColumnByName(sheet, columnPresence);
   var rowIndex = searchInColumn(sheet, columnID, id);
-  print('columnIndex: $columnIndex');
-  print('rowIndex: $rowIndex');
   if (columnIndex == -1) {
     return 'Erro no colunm index';
   }
@@ -121,12 +118,11 @@ String registerPresenceByID({
   return 'nao encontrado';
 }
 
-void saveExcel(Excel? excel, String? filePath) {
+void saveExcel(Excel? excel, String? filePath, BuildContext context) {
   try {
     var bytes = excel!.encode()!;
     File(filePath!).writeAsBytesSync(bytes);
-    print('File saved successfully!');
   } catch (e) {
-    print('Error saving file: $e');
+    dialogBox(context, "Notification", "error");
   }
 }

@@ -41,6 +41,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String? filePath;
   List item = [];
   final com = SerialPort.getAvailablePorts();
+  // final com = ["COM1", "COM2"];
   String? selectedItem;
   String? name;
   String? rfid;
@@ -247,7 +248,6 @@ class _MyHomePageState extends State<MyHomePage> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  print(com);
                                   if (formKey.currentState!.validate()) {
                                     formKey.currentState!.save();
                                     Navigator.push(

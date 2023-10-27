@@ -1,6 +1,6 @@
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:rfid/test.dart';
+import 'package:serial_port_win32/serial_port_win32.dart';
 import 'components.dart';
 import 'excel_services.dart';
 
@@ -33,18 +33,49 @@ class RFID extends StatefulWidget {
 class _RFIDState extends State<RFID> {
   final formKey = GlobalKey<FormState>();
   String id = '';
-  late SerialListener serialListener;
+  late SerialPort port;
+
+  void setupSerialPort() {
+    port = SerialPort(widget.comPort!);
+    port.BaudRate = 115200;
+    port.StopBits = 1;
+
+    port.readBytesSize = 8;
+
+    port.readOnListenFunction = (value) {
+      String data = String.fromCharCodes(value);
+      handleSerialData(data);
+    };
+
+    port.open();
+  }
+
+  void handleSerialData(String data) {
+    dialogBox(
+        context,
+        'Notification',
+        registerPresence(
+          sheet: widget.sheet,
+          id: data,
+          columnID: widget.rfid,
+          columnPresence: widget.selectedItem,
+          value: 'presente',
+        ));
+    saveExcel(widget.excel, widget.filePath, context);
+    // You can add any additional logic you want to perform with the received data here
+  }
 
   @override
   void initState() {
     super.initState();
-    serialListener = SerialListener(onDataReceived: onDataReceived);
-    serialListener.startListening();
+
+    setupSerialPort();
   }
 
-  void onDataReceived(String data) {
-    // Faça o que quiser com os dados recebidos, por exemplo, atualize o estado ou chame uma função de callback.
-    print('Received data: $data');
+  @override
+  void dispose() {
+    port.close();
+    super.dispose();
   }
 
   @override
@@ -99,14 +130,15 @@ class _RFIDState extends State<RFID> {
                                   dialogBox(
                                       context,
                                       'Notification',
-                                      registerPresenceByID(
+                                      registerPresence(
                                         sheet: widget.sheet,
                                         id: id,
                                         columnID: widget.idColumn,
                                         columnPresence: widget.selectedItem,
                                         value: 'presente',
                                       ));
-                                  saveExcel(widget.excel, widget.filePath);
+                                  saveExcel(
+                                      widget.excel, widget.filePath, context);
                                 }
                               },
                               child: const Text('Insert'),
