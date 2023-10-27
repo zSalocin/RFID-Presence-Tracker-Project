@@ -1,4 +1,4 @@
-[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/zSalocin/rfid/blob/main/README.md)   [![pt-br](https://img.shields.io/badge/lang-pt--br-green.svg)](https://github.com/zSalocin/rfid/blob/main/README_PT-BR.md)
+[![en](https://img.shields.io/badge/lang-en-red.svg)](https://github.com/zSalocin/RFID-Presence-Tracker-Project/blob/main/README.md)   [![pt-br](https://github.com/zSalocin/RFID-Presence-Tracker-Project/blob/main/README_PT-BR.md)
 
 # RFID Presence Tracker Project
 
