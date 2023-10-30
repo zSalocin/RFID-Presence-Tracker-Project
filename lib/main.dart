@@ -43,8 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
   final com = SerialPort.getAvailablePorts();
   // final com = ["COM1", "COM2"];
   String? selectedItem;
-  String? name;
-  String? rfid;
+  String? nameColumn;
+  String? rfidColumn;
   String? id;
   String? comPort;
   late Sheet? table;
@@ -193,7 +193,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   labelText: 'Name Column',
                                 ),
-                                value: name, // Current selected item
+                                value: nameColumn, // Current selected item
                                 items: item.map<DropdownMenuItem<String>>(
                                     (dynamic value) {
                                   return DropdownMenuItem<String>(
@@ -201,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Text(value.toString()),
                                   );
                                 }).toList(),
-                                onChanged: (value) => name = value!,
+                                onChanged: (value) => nameColumn = value!,
                               ),
                               const SizedBox(
                                 height: 20,
@@ -233,7 +233,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                   ),
                                   labelText: 'RFID Column',
                                 ),
-                                value: rfid, // Current selected item
+                                value: rfidColumn, // Current selected item
                                 items: item.map<DropdownMenuItem<String>>(
                                     (dynamic value) {
                                   return DropdownMenuItem<String>(
@@ -241,7 +241,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     child: Text(value.toString()),
                                   );
                                 }).toList(),
-                                onChanged: (value) => rfid = value!,
+                                onChanged: (value) => rfidColumn = value!,
                               ),
                               const SizedBox(
                                 height: 10,
@@ -257,8 +257,8 @@ class _MyHomePageState extends State<MyHomePage> {
                                           sheet: table,
                                           selectedItem: selectedItem,
                                           comPort: comPort,
-                                          name: name,
-                                          rfid: rfid,
+                                          nameColumn: nameColumn,
+                                          rfidColumn: rfidColumn,
                                           idColumn: id,
                                           filePath: filePath,
                                           excel: excel,

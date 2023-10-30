@@ -8,8 +8,8 @@ class RFID extends StatefulWidget {
   final Sheet? sheet;
   final String? selectedItem;
   final String? comPort;
-  final String? name;
-  final String? rfid;
+  final String? nameColumn;
+  final String? rfidColumn;
   final String? idColumn;
   final String? filePath;
   final Excel? excel;
@@ -21,8 +21,8 @@ class RFID extends StatefulWidget {
     required this.filePath,
     required this.selectedItem,
     required this.comPort,
-    required this.name,
-    required this.rfid,
+    required this.nameColumn,
+    required this.rfidColumn,
     required this.idColumn,
   });
 
@@ -34,6 +34,7 @@ class _RFIDState extends State<RFID> {
   final formKey = GlobalKey<FormState>();
   String id = '';
   late SerialPort port;
+  String reg = '';
 
   void setupSerialPort() {
     port = SerialPort(widget.comPort!);
@@ -50,27 +51,29 @@ class _RFIDState extends State<RFID> {
     port.open();
   }
 
-  void handleSerialData(String data) {
-    dialogBox(
-        context,
-        'Notification',
-        registerPresence(
+  Future<void> handleSerialData(String data) async {
+    if (registerPresence(
           sheet: widget.sheet,
           id: data,
-          columnID: widget.rfid,
+          columnID: widget.rfidColumn,
           columnPresence: widget.selectedItem,
           value: 'presente',
-        ));
+        ) !=
+        '-1') {
+      registerWithRFID(context, widget.sheet, data, widget.nameColumn,
+          widget.rfidColumn, widget.idColumn);
+    } else {
+      dialogBox(context, 'Notification', 'Presença Registrada');
+    }
     saveExcel(widget.excel, widget.filePath, context);
-    // You can add any additional logic you want to perform with the received data here
   }
 
-  @override
-  void initState() {
-    super.initState();
+  // @override
+  // void initState() {
+  //   super.initState();
 
-    setupSerialPort();
-  }
+  //   setupSerialPort();
+  // }
 
   @override
   void dispose() {
@@ -124,19 +127,24 @@ class _RFIDState extends State<RFID> {
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 if (formKey.currentState!.validate()) {
                                   formKey.currentState!.save();
-                                  dialogBox(
-                                      context,
-                                      'Notification',
-                                      registerPresence(
-                                        sheet: widget.sheet,
-                                        id: id,
-                                        columnID: widget.idColumn,
-                                        columnPresence: widget.selectedItem,
-                                        value: 'presente',
-                                      ));
+                                  reg = registerPresence(
+                                    sheet: widget.sheet,
+                                    id: id,
+                                    columnID: widget.idColumn,
+                                    columnPresence: widget.selectedItem,
+                                    value: 'presente',
+                                    columnName: widget.nameColumn,
+                                  );
+                                  if (reg != '-1') {
+                                    dialogBox(context, 'Notification',
+                                        '$reg registrado com sucesso');
+                                  } else {
+                                    dialogBox(context, 'Notification',
+                                        'Falha ao registrar');
+                                  }
                                   saveExcel(
                                       widget.excel, widget.filePath, context);
                                 }
@@ -144,12 +152,6 @@ class _RFIDState extends State<RFID> {
                               child: const Text('Insert'),
                             ),
                           ],
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            register(context);
-                          },
-                          icon: const Icon(Icons.add),
                         ),
                       ],
                     ),

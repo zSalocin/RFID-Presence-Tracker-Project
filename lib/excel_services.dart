@@ -10,6 +10,15 @@ Excel getExcel(String filePath) {
   return Excel.decodeBytes(bytes);
 }
 
+void saveExcel(Excel? excel, String? filePath, BuildContext context) {
+  try {
+    var bytes = excel!.encode()!;
+    File(filePath!).writeAsBytesSync(bytes);
+  } catch (e) {
+    dialogBox(context, "Notification", "error");
+  }
+}
+
 Sheet? getSheetFromExcel(Excel excel) {
   if (excel.tables.isNotEmpty) {
     return excel.tables.values.first;
@@ -35,8 +44,8 @@ List<String> getFirstColumnValues(Sheet? sheet) {
   return values;
 }
 
-int searchInColumn(Sheet? sheet, String nomeColuna, dynamic searchValue) {
-  var columnIndex = getColumnByName(sheet!, nomeColuna);
+int searchInColumn(Sheet? sheet, String columnName, dynamic searchValue) {
+  var columnIndex = getColumnByName(sheet!, columnName);
 
   if (columnIndex != -1) {
     for (var i = 1; i <= sheet.maxRows - 1; i++) {
@@ -86,43 +95,93 @@ int getColumnByName(Sheet sheet, String columnName) {
   return -1;
 }
 
+String searchName(Sheet sheet, String columnName, int index) {
+  var columnIndex = getColumnByName(sheet, columnName);
+
+  if (columnIndex != -1 && index < sheet.maxRows) {
+    var cellValue = sheet
+        .cell(CellIndex.indexByColumnRow(
+            columnIndex: columnIndex, rowIndex: index))
+        .value;
+    if (cellValue != null) {
+      return cellValue.toString();
+    }
+  }
+  return '';
+}
+
 String registerPresence({
   required Sheet? sheet,
   required String id,
   required String? columnID,
   required String? columnPresence,
-  dynamic value,
+  required String value,
+  String? columnName,
 }) {
   if (sheet == null || columnID == null || columnPresence == null) {
-    return 'error';
+    return '-1';
   }
   var columnIndex = getColumnByName(sheet, columnPresence);
   var rowIndex = searchInColumn(sheet, columnID, id);
-  if (columnIndex == -1) {
-    return 'Erro no colunm index';
-  }
-
-  if (rowIndex == -1) {
-    return 'Erro no rowIndex, verifique se a tabela esta tudo como texto';
-  }
   if (columnIndex >= 0 && rowIndex >= 0) {
     var cell = sheet.cell(CellIndex.indexByColumnRow(
         columnIndex: columnIndex, rowIndex: rowIndex));
 
-    // Set the value
     cell.value = value;
 
-    // Print the cell value
-    return 'registrado com sucesso';
+    if (columnName != null) {
+      return searchName(sheet, columnName, rowIndex);
+    } else {
+      return 'Nome Desconhecido';
+    }
   }
-  return 'nao encontrado';
+  return '-1';
 }
 
-void saveExcel(Excel? excel, String? filePath, BuildContext context) {
-  try {
-    var bytes = excel!.encode()!;
-    File(filePath!).writeAsBytesSync(bytes);
-  } catch (e) {
-    dialogBox(context, "Notification", "error");
+String addNewRecord(
+    {required Sheet? sheet,
+    required String name,
+    String? id,
+    String? rfid,
+    required String? columnName,
+    String? columnID,
+    String? columnRFID}) {
+  if (sheet == null || columnName == null) {
+    return 'error';
   }
+  int columnIndex = getColumnByName(sheet, columnName);
+
+  if (columnIndex >= 0) {
+    int rowIndex = 1;
+    while (true) {
+      var cellValue = valueByIndex(sheet, rowIndex, columnName);
+      if (cellValue == null || cellValue.isEmpty) {
+        break;
+      }
+      rowIndex++;
+    }
+
+    sheet
+        .cell(CellIndex.indexByColumnRow(
+            columnIndex: columnIndex, rowIndex: rowIndex))
+        .value = name;
+
+    if (columnID != null) {
+      int columnIndexID = getColumnByName(sheet, columnID);
+      sheet
+          .cell(CellIndex.indexByColumnRow(
+              columnIndex: columnIndexID, rowIndex: rowIndex))
+          .value = id;
+    }
+
+    if (columnRFID != null) {
+      int columnIndexRFID = getColumnByName(sheet, columnRFID);
+      sheet
+          .cell(CellIndex.indexByColumnRow(
+              columnIndex: columnIndexRFID, rowIndex: rowIndex))
+          .value = id;
+    }
+    return 'Registrado com Sucesso';
+  }
+  return 'falha ao registrar';
 }
