@@ -87,6 +87,19 @@ class _RFIDState extends State<RFID> {
     saveExcel(widget.excel, widget.filePath, context);
   }
 
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   setupSerialPort();
+  // }
+
+  @override
+  void dispose() {
+    port.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
