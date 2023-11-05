@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
@@ -7,7 +9,7 @@ import 'excel_services.dart';
 void main() {
   runApp(const MyApp());
 }
-   
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
@@ -44,6 +46,7 @@ class _MyHomePageState extends State<MyHomePage> {
   String? id;
   String? espIp;
   late Sheet? table;
+  bool espconnect = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -235,9 +238,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                 height: 10,
                               ),
                               ElevatedButton(
-                                onPressed: () {
-                                  if (formKey.currentState!.validate()) {
+                                onPressed: () async {
+                                  try {
+                                    await Socket.connect(espIp, 80);
+                                    print('Conectado ao ESP8266');
+                                    espconnect = true;
+                                  } catch (e) {
+                                    print('Erro ao conectar com o ESP8266: $e');
+                                  }
+                                  if (formKey.currentState!.validate() &&
+                                      espconnect) {
                                     formKey.currentState!.save();
+                                    // ignore: use_build_context_synchronously
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
