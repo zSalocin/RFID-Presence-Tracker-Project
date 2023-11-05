@@ -1,13 +1,13 @@
 import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
-import 'package:serial_port_win32/serial_port_win32.dart';
 import 'components.dart';
 import 'excel_services.dart';
+import 'dart:io';
 
 class RFID extends StatefulWidget {
   final Sheet? sheet;
   final String? selectedItem;
-  final String? comPort;
+  final String? espIP;
   final String? nameColumn;
   final String? rfidColumn;
   final String? idColumn;
@@ -20,7 +20,7 @@ class RFID extends StatefulWidget {
     required this.sheet,
     required this.filePath,
     required this.selectedItem,
-    required this.comPort,
+    required this.espIP,
     required this.nameColumn,
     required this.rfidColumn,
     required this.idColumn,
@@ -33,22 +33,41 @@ class RFID extends StatefulWidget {
 class _RFIDState extends State<RFID> {
   final formKey = GlobalKey<FormState>();
   String id = '';
-  late SerialPort port;
   String reg = '';
 
-  void setupSerialPort() {
-    port = SerialPort(widget.comPort!);
-    port.BaudRate = 115200;
-    port.StopBits = 1;
+  @override
+  void initState() {
+    super.initState();
+    iniciarConexaoComESP(); // Chama a função de início da conexão com o ESP
+  }
 
-    port.readBytesSize = 8;
+  void iniciarConexaoComESP() async {
+    try {
+      var socket = await Socket.connect(
+          widget.espIP, 80); // IP do ESP8266 e porta do servidor
+      print('Conectado ao ESP8266');
 
-    port.readOnListenFunction = (value) {
-      String data = String.fromCharCodes(value);
-      handleSerialData(data);
-    };
+      socket.listen(
+        (data) {
+          print('Dados recebidos: ${String.fromCharCodes(data)}');
+          // Aqui você pode adicionar a lógica para processar os dados recebidos do ESP8266
+          handleSerialData(String.fromCharCodes(data));
+        },
+        onError: (error) {
+          print('Erro: $error');
+          socket.destroy();
+        },
+        onDone: () {
+          print('Conexão encerrada pelo servidor');
+          socket.destroy();
+        },
+      );
 
-    port.open();
+      // O código a seguir é opcional e pode ser usado para enviar dados do Flutter para o ESP8266
+      // socket.write('Dados do Flutter');
+    } catch (e) {
+      print('Erro ao conectar com o ESP8266: $e');
+    }
   }
 
   Future<void> handleSerialData(String data) async {
@@ -66,19 +85,6 @@ class _RFIDState extends State<RFID> {
       dialogBox(context, 'Notification', 'Presença Registrada');
     }
     saveExcel(widget.excel, widget.filePath, context);
-  }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   setupSerialPort();
-  // }
-
-  @override
-  void dispose() {
-    port.close();
-    super.dispose();
   }
 
   @override

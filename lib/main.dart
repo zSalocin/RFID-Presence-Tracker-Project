@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:excel/excel.dart';
 import 'package:rfid/rfid_interface.dart';
-import 'package:serial_port_win32/serial_port_win32.dart';
-
 import 'excel_services.dart';
 
 void main() {
@@ -40,13 +38,11 @@ class _MyHomePageState extends State<MyHomePage> {
   PlatformFile? file;
   String? filePath;
   List item = [];
-  final com = SerialPort.getAvailablePorts();
-  // final com = ["COM1", "COM2"];
   String? selectedItem;
   String? nameColumn;
   String? rfidColumn;
   String? id;
-  String? comPort;
+  String? espIp;
   late Sheet? table;
   @override
   Widget build(BuildContext context) {
@@ -149,29 +145,21 @@ class _MyHomePageState extends State<MyHomePage> {
                               const SizedBox(
                                 height: 16,
                               ),
-                              DropdownButtonFormField<String>(
+                              TextFormField(
                                 decoration: InputDecoration(
                                   border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(30.0),
                                   ),
-                                  labelText: 'COM Port',
+                                  labelText: 'Esp IP',
                                 ),
-                                value: comPort, // Current selected item
-                                items: com.map<DropdownMenuItem<String>>(
-                                    (String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                                onChanged: (value) => comPort = value!,
                                 validator: (value) {
-                                  if (value == null) {
-                                    return 'please select a COM Port column';
+                                  if (value!.isEmpty) {
+                                    return 'Please enter a ESP IP';
                                   }
                                   return null;
                                 },
-                              )
+                                onSaved: (value) => espIp = value!,
+                              ),
                             ],
                           ),
                         ),
@@ -256,7 +244,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                         builder: (context) => RFID(
                                           sheet: table,
                                           selectedItem: selectedItem,
-                                          comPort: comPort,
+                                          espIP: espIp,
                                           nameColumn: nameColumn,
                                           rfidColumn: rfidColumn,
                                           idColumn: id,

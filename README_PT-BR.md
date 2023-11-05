@@ -7,11 +7,11 @@
 
 ## Descrição
 
-O projeto RFID Presence Tracker é um aplicativo para Windows que integra-se a um dispositivo Arduino equipado com um leitor RFID. O objetivo do aplicativo é registrar a presença de indivíduos com base nas informações lidas pelo leitor RFID e compará-las com uma tabela de referência.
+O projeto RFID Presence Tracker é um aplicativo para Windows que integra-se a um dispositivo Esp8266 equipado com um leitor RFID. O objetivo do aplicativo é registrar a presença de indivíduos com base nas informações lidas pelo leitor RFID e compará-las com uma tabela de referência.
 
 ## Funcionalidades
 
-- Leitura de dados do Arduino via comunicação serial.
+- Leitura de dados do Esp8266 via comunicação Wi-fi.
 
 - Comparação dos dados lidos com informações em uma tabela (como uma planilha Excel).
 
@@ -23,7 +23,7 @@ O projeto RFID Presence Tracker é um aplicativo para Windows que integra-se a u
 
 - Dispositivo com sistema Windows.
 
-- Dispositivo Arduino com leitor RFID e capacidade de comunicação serial.
+- Dispositivo Esp8266 com leitor RFID e capacidade de comunicação via Wi-fi.
 
 - Planilha de referência (Excel) contendo as informações a serem comparadas (as informações devem estar em formato de texto).
 
@@ -33,9 +33,9 @@ O projeto RFID Presence Tracker é um aplicativo para Windows que integra-se a u
 
 - Clone o repositório do projeto.
 
-- Carregue o código no Arduino para ativar a leitura do leitor RFID. (ainda não disponivel)
+- Carregue o código no Esp8266 para ativar a leitura do leitor RFID. (ainda não disponivel)
 
-- Certifique-se de que o dispositivo Windows esteja conectado corretamente com o arduino que fara a leitura do RFID.
+- Certifique-se de que o dispositivo Windows esteja conectado corretamente com o Esp8266 que fara a leitura do RFID.
 
 - Abra o aplicativo no dispositivo Windows.
 
