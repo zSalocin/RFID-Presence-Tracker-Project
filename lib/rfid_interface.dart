@@ -38,20 +38,19 @@ class _RFIDState extends State<RFID> {
   @override
   void initState() {
     super.initState();
-    iniciarConexaoComESP(); // Chama a função de início da conexão com o ESP
+    iniciarConexaoComESP();
   }
 
   void iniciarConexaoComESP() async {
     try {
-      var socket = await Socket.connect(
-          widget.espIP, 80); // IP do ESP8266 e porta do servidor
+      var socket = await Socket.connect(widget.espIP,
+          80); // IP do ESP8266 e porta do servidor algo como 192.168.4.1 (final sempre 1)
       print('Conectado ao ESP8266');
 
       socket.listen(
         (data) {
           print('Dados recebidos: ${String.fromCharCodes(data)}');
           // Aqui você pode adicionar a lógica para processar os dados recebidos do ESP8266
-          handleSerialData(String.fromCharCodes(data));
         },
         onError: (error) {
           print('Erro: $error');
@@ -62,9 +61,6 @@ class _RFIDState extends State<RFID> {
           socket.destroy();
         },
       );
-
-      // O código a seguir é opcional e pode ser usado para enviar dados do Flutter para o ESP8266
-      // socket.write('Dados do Flutter');
     } catch (e) {
       print('Erro ao conectar com o ESP8266: $e');
     }

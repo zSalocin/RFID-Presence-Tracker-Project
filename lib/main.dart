@@ -241,33 +241,22 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
                                     formKey.currentState!.save();
-                                    if (espIp == null) {}
-                                    try {
-                                      await Socket.connect(espIp!, 80);
-                                      print('Conectado ao ESP8266');
-                                      espconnect = true;
-                                    } catch (e) {
-                                      print(
-                                          'Erro ao conectar com o ESP8266: $e');
-                                    }
-                                    if (espconnect) {
-                                      // ignore: use_build_context_synchronously
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => RFID(
-                                            sheet: table,
-                                            selectedItem: selectedItem,
-                                            espIP: espIp,
-                                            nameColumn: nameColumn,
-                                            rfidColumn: rfidColumn,
-                                            idColumn: id,
-                                            filePath: filePath,
-                                            excel: excel,
-                                          ),
+                                    //TODO add verifica;'ao de IP
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => RFID(
+                                          sheet: table,
+                                          selectedItem: selectedItem,
+                                          espIP: espIp,
+                                          nameColumn: nameColumn,
+                                          rfidColumn: rfidColumn,
+                                          idColumn: id,
+                                          filePath: filePath,
+                                          excel: excel,
                                         ),
-                                      );
-                                    }
+                                      ),
+                                    );
                                   }
                                 },
                                 child: const Text('Go ->'),
