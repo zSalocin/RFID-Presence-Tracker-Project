@@ -50,6 +50,7 @@ class _RFIDState extends State<RFID> {
       socket.listen(
         (data) {
           print('Dados recebidos: ${String.fromCharCodes(data)}');
+          handleSerialData(String.fromCharCodes(data));
           // Aqui você pode adicionar a lógica para processar os dados recebidos do ESP8266
         },
         onError: (error) {
